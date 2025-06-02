@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "backend service for iitisoc project",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaal-09/IITISOC-InfiniteFeedRecommender-WebApp-Backend.git"
+  },
+  "keywords": [
+    "temp"
+  ],
+  "author": "Kaal, isha, harshita, khushi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kaal-09/IITISOC-InfiniteFeedRecommender-WebApp-Backend/issues"
+  },
+  "homepage": "https://github.com/Kaal-09/IITISOC-InfiniteFeedRecommender-WebApp-Backend#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
