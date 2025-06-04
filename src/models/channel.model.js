@@ -1,0 +1,73 @@
+import mongoose, { mongo } from "mongoose";
+
+const channelSchema = mongoose.Schema({
+    details: {
+        type: {
+            ceo: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                require: true,
+            },
+            officialName: { // BSE listed / MCA listed full name
+                type: String,
+                require: true,
+            },
+            parentCompanyIfAny: {
+                type: String // BSE listed / MCA listed full name
+            }
+        },
+    },
+    historyOfPostsCreated: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Asset",
+            }
+        ]
+    },
+    bio: {
+        type: String,
+        default: "",
+    },
+    detailsAboutInsiders: {
+        type: {
+            ceo: {
+                type: String // email.
+            },
+            contentManagement: {
+                type: String,
+            },
+            boardOfDirectors: { // if any ofc
+                type: String,
+            }
+        },
+        require: true,
+    },
+    ratingOfCommpany: {
+        type: Number,
+        min: 0.0,
+        max: 10.0,
+    },
+    cntOfUsersSubscribedToIt: {
+        type: Number,
+        min: 0,
+        default: 0,
+    }, 
+    ListOfUsersSubscribed: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            }
+        ]
+    },
+    reports: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Notification",
+            }
+        ]
+    }
+
+}, { timestamps: true });
