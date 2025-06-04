@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { MongooseError } from "mongoose";
 
 const assetModel = mongoose.Schema({
     creator: {
@@ -93,10 +93,12 @@ const assetModel = mongoose.Schema({
     },
     comments: {
         type: [
-            //comments
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Comment",
+            }
         ]
     }
-
 
 }, {timestamps: true });
 
