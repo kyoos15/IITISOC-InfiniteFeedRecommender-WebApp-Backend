@@ -3,6 +3,10 @@ import mongoose, { mongo } from "mongoose";
 const channelSchema = mongoose.Schema({
     details: {
         type: {
+            id: {
+                type: String,
+                require: true,
+            },
             ceo: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
@@ -68,6 +72,26 @@ const channelSchema = mongoose.Schema({
                 ref: "Notification",
             }
         ]
+    },
+    likesOnPosts: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Asset',
+            }
+        ]
+    },
+    commentOnPosts: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Comment',
+            }
+        ]
     }
 
 }, { timestamps: true });
+
+const Channel = mongoose.model("Channel", channelSchema);
+
+export default Channel;
