@@ -54,7 +54,10 @@ const userSchema = mongoose.Schema({
         ]
     },
     occupation: {
-        // enum of [student, professional]
+        type: String,
+        enum: ['Student', 'Professional', 'Researcher', 'Educator', 'Other'],
+        required: true,
+        default: 'Student',
     },
     InterestModel: {
         type: {
@@ -80,8 +83,9 @@ const userSchema = mongoose.Schema({
                     }
                 ]
             }
-        }
-    }
+        },
+        default: () => ({}),
+    },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);

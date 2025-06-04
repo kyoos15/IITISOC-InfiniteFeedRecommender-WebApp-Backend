@@ -30,7 +30,8 @@ const assetModel = mongoose.Schema({
                     }
                 }
             }
-        ]
+        ],
+        require: true,
     },
     title: {
         type: String,
