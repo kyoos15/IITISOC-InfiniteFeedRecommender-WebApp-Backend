@@ -24,8 +24,9 @@ app.use(
 );
 
 app.get('/', (req, res)=> {
-    res.send('Ishaan is gay')
+    res.send('Ishaan is gay, and he is proud of it!')
 })
+
 
 app.use('/api/user', userRoutes);
 app.use('/api/asset', assetRoutes);
