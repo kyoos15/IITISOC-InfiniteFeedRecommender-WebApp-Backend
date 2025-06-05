@@ -72,20 +72,24 @@ const assetModel = mongoose.Schema({
         require: true,
     },
     likes: {
-        type: [
+        likerArray: {
+            type: [
                 {
-                    userOrChannel: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        required: true,
-                        refPath: 'likes.kind',
-                    },
-                    kind: {
-                        type: String,
-                        required: true,
-                        enum: ['User', 'Channel'], 
-                    },
-            }
-        ],
+                    type: {
+                        userOrChannel: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            required: true,
+                            refPath: 'likes.kind',
+                        },
+                        kind: {
+                            type: String,
+                            required: true,
+                            enum: ['User', 'Channel'], 
+                        },
+                    }
+                }
+            ]
+        },
         count: {
             type: Number,
             default: 0,

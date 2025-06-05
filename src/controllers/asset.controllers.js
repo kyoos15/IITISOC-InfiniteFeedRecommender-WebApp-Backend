@@ -31,3 +31,31 @@ export const createAsset = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const likeAsset = async (req, res) => {
+    const { assetId, likerId } = req.params;
+    try {
+        const foundedAsset = await Asset.findById(assetId);
+        if(!foundedAsset){
+            return res.status(404).json({ message: "Asset not found" });
+        }
+        const currLikes = foundedAsset.likes.count;
+        foundedAsset.likes.likerArray.push(likerId);
+        foundedAsset.likes.count = currLikes + 1;
+        await foundedAsset.save();
+
+        return res.status(200).json({ message: "liking an asset done" });
+    } catch (error) {   
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const updateAnAsset = async (req, res) => {
+    const {assetId, title, description, urlToCompNewsPage = "", urlToImage, content} = req.body();
+    try {
+        
+    } catch (error) {
+        
+    }
+}
