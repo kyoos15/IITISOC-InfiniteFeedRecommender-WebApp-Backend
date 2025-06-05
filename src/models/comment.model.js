@@ -48,6 +48,14 @@ const commentSchema = mongoose.Schema(
             },
         },
     ],
+
+     replies: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
+      }
+    ],
+    
   },
   { timestamps: true }
 );
