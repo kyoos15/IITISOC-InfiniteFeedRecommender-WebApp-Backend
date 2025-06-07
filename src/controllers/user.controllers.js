@@ -1,5 +1,5 @@
-import User from "../models/user.model";
-import { generateToken } from "../utils/utils";
+import User from "../models/user.model.js";
+import { generateToken } from "../utils/utils.js";
 
 export const createUser = async (req, res) => {
     const { userName, fullName, email, password, profilePic = "", occupation = "",  taggsInterestedIn = ""} = req.body;

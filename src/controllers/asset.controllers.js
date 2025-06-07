@@ -1,5 +1,5 @@
-import Asset from "../models/asset.model";
-import Channel from "../models/channel.model";
+import Asset from "../models/asset.model.js";
+import Channel from "../models/channel.model.js";
 
 export const createAsset = async (req, res) => {
     const { creator, source, authors, title, description, urlToCompNewsPage = "", urlToImage, publishedAt, content } = req.body;
