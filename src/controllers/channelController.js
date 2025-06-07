@@ -181,41 +181,66 @@ export const addComment = async (req, res) => {
     try {
         const { channelId, assetId, content, parentCommentId } = req.body;
 
+        if (!channelId || !content || (!assetId && !parentCommentId)) {
+            return res.status(400).json({
+                message: "channelId, content, and either assetId or parentCommentId are required.",
+            });
+        }
+
+        const isValid = [channelId, assetId, parentCommentId].filter(Boolean).every(id =>
+            mongoose.Types.ObjectId.isValid(id)
+        );
+        if (!isValid) {
+            return res.status(400).json({ message: "One or more invalid IDs." });
+        }
+
+        const channel = await Channel.findById(channelId);
+        if (!channel) {
+            return res.status(404).json({ message: "Channel not found" });
+        }
+
+
         const newComment = new Comment({
             creator: {
                 id: channelId,
                 modelType: "Channel",
             },
-            content,
+            content: content.trim(),
             parent: {
                 id: parentCommentId || assetId,
                 modelType: parentCommentId ? "Comment" : "Asset",
             },
             likes: [],
+            likesCount: 0,
         });
 
         const savedComment = await newComment.save();
 
-        if (!parentCommentId) {
-            const asset = await Asset.findById(assetId);
-            if (!asset) {
-                return res.status(404).json({ message: "Asset not found" });
-            }
-            asset.comments.push(savedComment._id);
-            await asset.save();
-        } else {
+        if (parentCommentId) {
             const parentComment = await Comment.findById(parentCommentId);
             if (!parentComment) {
                 return res.status(404).json({ message: "Parent comment not found" });
             }
-            parentComment.replies = parentComment.replies || [];
+
             parentComment.replies.push(savedComment._id);
             await parentComment.save();
+        } else {
+            const asset = await Asset.findById(assetId);
+            if (!asset) {
+                return res.status(404).json({ message: "Asset not found" });
+            }
+
+            asset.comments.push(savedComment._id);
+            await asset.save();
         }
 
-        res.status(201).json(savedComment);
+        return res.status(201).json({
+            message: "Comment posted successfully",
+            comment: savedComment,
+        });
+
     } catch (error) {
         console.error("Error adding comment:", error);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 };

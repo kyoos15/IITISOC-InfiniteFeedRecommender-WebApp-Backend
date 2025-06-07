@@ -5,7 +5,8 @@ import { generateToken } from "../utils/utils.js";
 import bcrypt from 'bcrypt'
 
 export const createUser = async (req, res) => {
-    const { userName, fullName, email, password, profilePic = "", occupation = "",  taggsInterestedIn = ""} = req.body;
+    const { userName, fullName, email, password, occupation = "",  taggsInterestedIn = ""} = req.body;
+    const {file} = req;
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -17,6 +18,16 @@ export const createUser = async (req, res) => {
             .split(",")            
             .map(tag => tag.trim())
             .filter(tag => tag); 
+        let profilePic = null;
+        if(file) {
+            const cloudResult = await uploadOnCloudinary(file.path);
+            if (!cloudResult) {
+                return res.status(500).json({ error: "Cloudinary upload failed" });
+            }
+
+            profilePic = cloudResult.secure_url;
+            fs.unlinkSync(file.path); 
+        }
 
         const user = await User.create({ 
             userName,
@@ -47,7 +58,7 @@ export const createUser = async (req, res) => {
         console.log("Error in signup controller", error.message);
         res.status(500).json({ message: "Internal Server Error" });
     }
-};
+}; 
 
 export const loginUser = async (req, res) => {
     const {email, password} = req.body;
