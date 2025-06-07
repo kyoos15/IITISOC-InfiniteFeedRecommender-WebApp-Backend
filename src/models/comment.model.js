@@ -49,13 +49,18 @@ const commentSchema = mongoose.Schema(
         },
     ],
 
+    likesCount: {
+        type: Number,
+        default: 0,
+        min: 0
+    },
+
     replies: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
       }
     ],
-    
   },
   { timestamps: true }
 );
