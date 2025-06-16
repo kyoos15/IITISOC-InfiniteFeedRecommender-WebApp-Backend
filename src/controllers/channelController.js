@@ -30,7 +30,6 @@ export const createChannel = async (req, res) => {
             details,
             bio: bio || "",
             detailsAboutInsiders,
-            ratingOfCommpany: ratingOfCommpany || 0,
             cntOfUsersSubscribedToIt: 0,
             ListOfUsersSubscribed: [],
             historyOfPostsCreated: [],
@@ -175,7 +174,7 @@ export const toggleLikeAssetByChannel = async (req, res) => {
         console.error("Error toggling like:", error);
         res.status(500).json({ message: "Server Error" });
     }
-};
+}; 
 
 export const addComment = async (req, res) => {
     try {

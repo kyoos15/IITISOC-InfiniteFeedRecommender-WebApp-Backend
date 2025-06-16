@@ -36,7 +36,8 @@ const channelSchema = mongoose.Schema({
     detailsAboutInsiders: {
         type: {
             ceo: {
-                type: String // email.
+                type: String, // email.
+                required: true,
             },
             contentManagement: {
                 type: String,

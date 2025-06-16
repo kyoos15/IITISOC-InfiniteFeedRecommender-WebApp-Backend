@@ -13,11 +13,11 @@ export const createAsset = async (req, res) => {
         if(!createdAsset) {
             res.status(500).json({ message: "Some problem occured in creating an asset" });
         }
-        const parentChannel = await Channel.findByIdUpdate(creator, {
+        const parentChannel = await Channel.findByIdAndUpdate(creator, {
             $push: { historyOfPostsCreated: createdAsset._id },
         }, {new: true});
 
-        if(!parentChannel){
+        if(!parentChannel){ 
             return res.status(404).json({
                 message: `parentChannel with id: ${creator} doesnt exist or has some discrepances`,
             });
@@ -59,3 +59,18 @@ export const updateAnAsset = async (req, res) => {
         
     }
 }
+
+export const getAllAssets = async (req, res) => {
+    try {
+        const assets = await Asset.find();
+        console.log("founded assets are: ", assets);
+        
+        res.status(200).json({
+            message: "Assets fetched successfully",
+            data: assets,
+        });
+    } catch (err) {
+        console.error("Error fetching assets:", err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
