@@ -30,7 +30,7 @@ export const createAsset = async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 export const likeAsset = async (req, res) => {
     const { assetId, likerId } = req.params;
@@ -49,7 +49,7 @@ export const likeAsset = async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
     }
-}
+};
 
 export const updateAnAsset = async (req, res) => {
     const {assetId, title, description, urlToCompNewsPage = "", urlToImage, content} = req.body();
@@ -58,7 +58,7 @@ export const updateAnAsset = async (req, res) => {
     } catch (error) {
         
     }
-}
+};
 
 export const getAllAssets = async (req, res) => {
     try {
