@@ -59,6 +59,14 @@ const userSchema = mongoose.Schema({
         required: true,
         default: 'Student',
     },
+    likesOnPosts: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Asset',
+            }
+        ]
+    },
     InterestModel: {
         type: {
             taggsInterestedIn: {

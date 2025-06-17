@@ -89,7 +89,34 @@ const channelSchema = mongoose.Schema({
                 ref: 'Comment',
             }
         ]
-    }
+    },
+    InterestModel: {
+        type: {
+            taggsInterestedIn: {
+                type: [
+                    {
+                        type: [ String ],
+                    }
+                ]
+            },
+            taggsNotInterestedIn: {
+                type: [
+                    {
+                        type: [ String ],
+                    }
+                ]
+            },
+            previous10ArticleHistory: {
+                type: [
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'Asset',
+                    }
+                ]
+            }
+        },
+        default: () => ({}),
+    },
 
 }, { timestamps: true });
 
