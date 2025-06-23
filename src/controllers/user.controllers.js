@@ -270,3 +270,40 @@ export const giveAReplyOnComment = async (req, res) => {
         return res.status(500).json({ message: "Server error while replying to comment" });
     }
 };
+
+export const toggleLikeAssetByUser = async (req, res) => {
+    try {
+        const { assetId, userId } = req.params;
+
+        const asset = await Asset.findById(assetId);
+        if (!asset) {
+            return res.status(404).json({ message: "Asset not found" });
+        }
+
+        const likeIndex = asset.likes.likerArray.findIndex(
+            (like) =>
+                like.userOrChannel.toString() === userId && like.kind === "User"
+        );
+        if (likeIndex !== -1) {
+            asset.likes.likerArray.splice(likeIndex, 1);
+            asset.likes.count = Math.max(0, asset.likes.count - 1);
+        } else {
+            asset.likes.likerArray.push({
+                userOrChannel: userId,
+                kind: "User",
+            });
+            asset.likes.count += 1;
+        }
+
+        await asset.save();
+
+        res.status(200).json({
+            message:
+                likeIndex !== -1 ? "Disliked successfully" : "Liked successfully",
+            likesCount: asset.likes.count,
+        });
+    } catch (error) {
+        console.error("Error toggling like by user:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
