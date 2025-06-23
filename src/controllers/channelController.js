@@ -1,21 +1,22 @@
 import Channel from "../models/channel.model.js";
-import User from "../models/user.model.js";
 import Asset from "../models/asset.model.js";
 import Comment from "../models/comment.model.js";
+import bcrypt from 'bcrypt';
+import {generateToken} from '../utils/utils.js';
 
 export const createChannel = async (req, res) => {
     try {
-        const { details, bio = "", detailsAboutInsiders } = req.body;
+        const { details, bio = "", detailsAboutInsiders, passwordOfChannel } = req.body;
 
         if (
-            !details?.id ||
             !details?.ceo ||
             !details?.officialName ||
-            !detailsAboutInsiders?.ceo
+            !detailsAboutInsiders?.ceo ||
+            !passwordOfChannel
         ) {
             return res.status(400).json({
                 message:
-                    "Missing required fields in 'details' or 'detailsAboutInsiders'.",
+                    "Missing required fields: 'details.ceo', 'details.officialName', 'detailsAboutInsiders.ceo', or 'passwordOfChannel'.",
             });
         }
 
@@ -26,10 +27,13 @@ export const createChannel = async (req, res) => {
                 .json({ message: "Channel with this ID already exists." });
         }
 
+        const hashedPassword = await bcrypt.hash(passwordOfChannel, 10);
+
         const channel = new Channel({
             details,
-            bio: bio || "",
+            bio,
             detailsAboutInsiders,
+            passwordOfChannel: hashedPassword, 
             cntOfUsersSubscribedToIt: 0,
             ListOfUsersSubscribed: [],
             historyOfPostsCreated: [],
@@ -43,6 +47,34 @@ export const createChannel = async (req, res) => {
     } catch (err) {
         console.error("Error creating channel:", err.message);
         return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const loginChannel = async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const channel = await Channel.findOne({ 'detailsAboutInsiders.ceo': email });
+
+        if (!channel) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, channel.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+
+        generateToken(channel._id, res);
+
+        res.status(200).json({
+            _id: channel._id,
+            officialName: channel.details.officialName,
+            ceoEmail: channel.detailsAboutInsiders.ceo,
+        });
+    } catch (error) {
+        console.error('Error in loginChannel controller:', error.message);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 

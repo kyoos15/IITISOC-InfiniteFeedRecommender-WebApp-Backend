@@ -1,9 +1,10 @@
 import express from 'express';
-import { createChannel, getChannelById, updateChannel, deleteChannel, getAllChannels, toggleLikeAssetByChannel, addComment } from '../controllers/channelController.js';
+import { createChannel, getChannelById, updateChannel, deleteChannel, getAllChannels, toggleLikeAssetByChannel, addComment, loginChannel } from '../controllers/channelController.js';
 
 const router = express.Router();
 
 router.post('/create', createChannel);
+router.post('/login', loginChannel);
 router.get('/getchannelbyid/:channelId', getChannelById); 
 router.patch('/update/:channelId', updateChannel);
 router.delete('/delete/:id', deleteChannel);

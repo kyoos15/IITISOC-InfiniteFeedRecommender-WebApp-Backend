@@ -3,10 +3,6 @@ import mongoose, { mongo } from "mongoose";
 const channelSchema = mongoose.Schema({
     details: {
         type: {
-            id: {
-                type: String,
-                require: true,
-            },
             ceo: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
@@ -20,6 +16,10 @@ const channelSchema = mongoose.Schema({
                 type: String // BSE listed / MCA listed full name
             }
         },
+    },
+    passwordOfChannel: {
+        type: String,
+        require: true,
     },
     historyOfPostsCreated: {
         type: [
