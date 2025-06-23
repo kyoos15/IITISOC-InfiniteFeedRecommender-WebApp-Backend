@@ -192,12 +192,10 @@ export const addComment = async (req, res) => {
         if (!isValid) {
             return res.status(400).json({ message: "One or more invalid IDs." });
         }
-
         const channel = await Channel.findById(channelId);
         if (!channel) {
             return res.status(404).json({ message: "Channel not found" });
         }
-
 
         const newComment = new Comment({
             creator: {
@@ -243,4 +241,3 @@ export const addComment = async (req, res) => {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
-

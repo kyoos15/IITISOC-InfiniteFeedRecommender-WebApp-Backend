@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'your_secret_key'; 
 
-// SIGNUP
 export const signup = async (req, res) => {
   try {
     const { fullName, userName, email, password, occupation } = req.body;
@@ -41,7 +40,6 @@ export const signup = async (req, res) => {
   }
 };
 
-// LOGIN
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;

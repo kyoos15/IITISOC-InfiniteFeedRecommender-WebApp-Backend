@@ -2,6 +2,7 @@ import { addDocToCollection, getOrCreateCollectionFun } from "../../../vectorDB/
 import Asset from "../models/asset.model.js";
 import Channel from "../models/channel.model.js";
 import User from "../models/user.model.js";
+import mongoose from "mongoose";
 
 export const createAsset = async (req, res) => {
     const { creator, source, authors, title, description, urlToCompNewsPage = "", urlToImage, publishedAt, content } = req.body;
@@ -129,5 +130,30 @@ export const getAllAssets = async (req, res) => {
     } catch (err) {
         console.error("Error fetching assets:", err);
         res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const getAssetById = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: 'Invalid asset ID format.' });
+    }
+
+    try {
+        console.log("just inside getassetbyid controller");
+        const asset = await Asset.findById(id);
+
+        
+        if (!asset) {
+            return res.status(404).json({ message: 'Asset not found.' });
+        }
+
+        return res.status(200).json({
+            message: 'Asset retrieved successfully.',
+            data: asset
+        });
+    } catch (error) {
+        console.error("Error in getAssetById:", error); // <-- full error object
+        return res.status(500).json({ message: 'Internal server error.' });
     }
 };
