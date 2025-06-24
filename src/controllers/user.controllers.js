@@ -97,6 +97,7 @@ export const logoutUser = (req, res) => {
     }
 }
 
+//essentially get user by email
 export const getUserProfile = async (req, res) => {
     const { email } = req.params;
     try {
@@ -110,6 +111,24 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
+export const getUserById = async (req, res) => {
+    const {id} = req.params;
+    if(!id) {
+        return res.status(401).json({ message: "No id provided" });
+    }
+    try {
+        const foundedUser = await User.findById(id);
+        if(!foundedUser){
+            return res.status(402).json({ message: "some problem occured while finding the user" });
+        }
+
+        return res.status(200).json({data: foundedUser, message: "User found successfully" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
@@ -119,7 +138,7 @@ export const getAllUsers = async (req, res) => {
         return res.status(200).json(users);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 
@@ -306,4 +325,4 @@ export const toggleLikeAssetByUser = async (req, res) => {
         console.error("Error toggling like by user:", error);
         res.status(500).json({ message: "Server Error" });
     }
-};
+}; 

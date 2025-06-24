@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, getAllUsers, getUserProfile, loginUser, logoutUser, postACommentOnAnAsset, toggleLikeAssetByUser } from "../controllers/user.controllers.js";
+import { createUser, getAllUsers, getUserById, getUserProfile, loginUser, logoutUser, postACommentOnAnAsset, toggleLikeAssetByUser } from "../controllers/user.controllers.js";
 import { upload } from "../middlewares/multer.middlewares.js";
 
 const router = express.Router();
@@ -11,5 +11,6 @@ router.get('/profile/:email', getUserProfile);
 router.get('/getallusers', getAllUsers);
 router.post('postcommentonasset/:commenterId/:assetId', postACommentOnAnAsset);
 router.patch('/likes/:assetId/:userId', toggleLikeAssetByUser)
+router.get('/getuserbyid/:id', getUserById);
 
 export default router

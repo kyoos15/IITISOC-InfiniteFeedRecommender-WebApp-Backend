@@ -5,12 +5,14 @@ import User from "../models/user.model.js";
 import mongoose from "mongoose";
 
 export const createAsset = async (req, res) => {
-    const { creator, source, authors, title, description, urlToCompNewsPage = "", urlToImage, publishedAt, content } = req.body;
+    const { creator, source, authors, title, description, urlToCompNewsPage = "", urlToImage, publishedAt, content, taggs } = req.body;
     try {
+        const taggsArray = taggs.split().filter(it => it).map((it) => it.trim());
+
         const createdAsset = await Asset.create({
             creator, source, authors,
             title, description, urlToCompNewsPage, urlToImage,
-            publishedAt, content
+            publishedAt, content, taggs: taggsArray
         })
 
         if(!createdAsset) {                

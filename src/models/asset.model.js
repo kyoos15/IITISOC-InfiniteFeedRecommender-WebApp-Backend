@@ -17,6 +17,14 @@ const assetModel = mongoose.Schema({
         },
         require: true,
     },
+    taggs: {
+        type: [
+            {
+                type: String,
+            }
+        ],
+        require: true,
+    },
     authors: {
         type: [
             {
