@@ -1,4 +1,4 @@
-import { addDocToCollection, getOrCreateCollectionFun } from "../../../vectorDB/index.js";
+import { addDocToCollection, getOrCreateCollectionFun, getQueryResults } from "../../../vectorDB/index.js";
 import Asset from "../models/asset.model.js";
 import Channel from "../models/channel.model.js";
 import User from "../models/user.model.js";
@@ -30,19 +30,22 @@ export const createAsset = async (req, res) => {
         console.log("the asset is created now and we are now putting relevant data into the vectorDB");
         const getOrCreateVectorDBOfTitle_1 = await getOrCreateCollectionFun({collectionName: "titleVectorDBCollection_1"});
         const getOrCreateVectorDBOfDescription_1 = await getOrCreateCollectionFun({collectionName: "descriptionVectorDBCollection_1"});
+        const getOrCreateVectorDBOfTaggs_1 = await getOrCreateCollectionFun({ collectionName: "taggsVectorDBCollection_1"});
 
         console.log("Connected to vectorDB, adding data to vectorDB ... ...");
         let titleArray = [title];
         let descriptionArray = [description];
+        let stgsarr = taggsArray.sort();
         let ids = [createdAsset._id.toString()];
 
         await addDocToCollection({collection: getOrCreateVectorDBOfTitle_1, documents: titleArray, ids: ids});
         await addDocToCollection({collection: getOrCreateVectorDBOfDescription_1, documents: descriptionArray, ids: ids});
+        await addDocToCollection({collection: getOrCreateVectorDBOfTaggs_1, documents: stgsarr, ids: ids });
         console.log("All the data successfully added, everything is good, servers are up and running, you are good to go!!");
 
         return res.status(200).json({
             createdAsset
-        })
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
@@ -125,7 +128,7 @@ export const getAllAssets = async (req, res) => {
         const assets = await Asset.find();
         console.log("founded assets are: ", assets);
         
-        res.status(200).json({
+        return res.status(200).json({
             message: "Assets fetched successfully",
             data: assets,
         });
@@ -155,8 +158,32 @@ export const getAssetById = async (req, res) => {
             data: asset
         });
     } catch (error) {
-        console.error("Error in getAssetById:", error); // <-- full error object
+        console.error("Error in getAssetById:", error); 
         return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 
+export const getQueyResult_Taggs = async (req, res) => {
+    const {viewerId} = req.params;
+    const {viewerType, collectionName, includesString, resultCounts} = req.body();
+    try {
+        const viewer = await (viewerType === "Channel" ? Channel.findById(viewerId) : User.findById(viewerId));
+        const taggsStringArray = [viewer.InterestModel.taggsInterestedIn.join(" ")];
+
+        const getOrCreateCollection = await getOrCreateCollectionFun({collectionName});
+        const includeArray = (includesString ? includesString.split(",").filter(it => it).map((it) => it.trim()) : null);
+
+        const result = await getQueryResults({
+            queryTextArray: taggsStringArray,
+            resultCounts: resultCounts, 
+            collection: getOrCreateCollection,
+            includeArray: includeArray || null,
+        });
+
+        return res.status(200).json({message: "done", data: result});
+
+    } catch (error) {
+        console.error("Error in getQueyResult_Taggs:", error); 
+        return res.status(500).json({ message: 'Internal server error.' });
+    }
+}
